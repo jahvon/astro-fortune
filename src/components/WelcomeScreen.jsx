@@ -1,3 +1,5 @@
+import { Button } from '@/components/ui/button'
+
 export default function WelcomeScreen({ active, onBegin }) {
   return (
     <div className={`screen ${active ? 'active' : ''}`}>
@@ -8,9 +10,9 @@ export default function WelcomeScreen({ active, onBegin }) {
       <p className="text-2xl mb-12 text-center heading-font" style={{ color: 'rgba(236, 72, 153, 1)' }}>
         What guidance do you seek?
       </p>
-      <button onClick={onBegin} className="cosmic-button">
+      <Button onClick={onBegin} variant="cosmic" size="xl">
         Begin Your Reading
-      </button>
+      </Button>
     </div>
   )
 }

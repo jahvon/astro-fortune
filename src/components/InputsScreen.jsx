@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Button } from '@/components/ui/button'
 
 const zodiacSigns = [
   { sign: 'aries', symbol: '♈', name: 'Aries' },
@@ -102,13 +103,14 @@ export default function InputsScreen({ active, appState, setAppState, onConsult 
             </h2>
             <div className="flex flex-wrap gap-4 justify-center">
               {topics.map(({ id, label }) => (
-                <button
+                <Button
                   key={id}
-                  className={`option-button ${appState.topic === id ? 'selected' : ''}`}
+                  variant={appState.topic === id ? 'cosmic' : 'outline'}
+                  className={appState.topic === id ? '' : 'border-purple-500/50 hover:border-purple-500'}
                   onClick={() => handleTopicSelect(id)}
                 >
                   {label}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -122,13 +124,14 @@ export default function InputsScreen({ active, appState, setAppState, onConsult 
             </h2>
             <div className="flex flex-wrap gap-4 justify-center">
               {feelings.map(({ id, label }) => (
-                <button
+                <Button
                   key={id}
-                  className={`option-button ${appState.feeling === id ? 'selected' : ''}`}
+                  variant={appState.feeling === id ? 'cosmic' : 'outline'}
+                  className={appState.feeling === id ? '' : 'border-purple-500/50 hover:border-purple-500'}
                   onClick={() => handleFeelingSelect(id)}
                 >
                   {label}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -137,9 +140,9 @@ export default function InputsScreen({ active, appState, setAppState, onConsult 
         {/* Final Button */}
         {currentStep === 4 && (
           <div className="text-center mt-12">
-            <button onClick={handleConsult} className="cosmic-button">
+            <Button onClick={handleConsult} variant="cosmic" size="xl">
               Consult the Cosmos
-            </button>
+            </Button>
           </div>
         )}
       </div>
