@@ -1,13 +1,19 @@
 import { useState } from 'react'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 export default function ApiKeyPanel() {
   const [apiKey, setApiKey] = useState('')
-  const [collapsed, setCollapsed] = useState(true)
+  const [open, setOpen] = useState(false)
   const [status, setStatus] = useState({ text: '', type: '' })
-
-  const toggleCollapse = () => {
-    setCollapsed(!collapsed)
-  }
 
   const confirmKey = async () => {
     if (!apiKey) {
@@ -41,7 +47,7 @@ export default function ApiKeyPanel() {
         sessionStorage.setItem('gemini-api-key', apiKey)
 
         setTimeout(() => {
-          setCollapsed(true)
+          setOpen(false)
         }, 2000)
       } else {
         setStatus({ text: '✗ Invalid API Key', type: 'error' })
@@ -52,31 +58,51 @@ export default function ApiKeyPanel() {
   }
 
   return (
-    <div className={`api-key-container ${collapsed ? 'collapsed' : ''}`}>
-      <div className="api-key-toggle" onClick={toggleCollapse}>
-        🔑
-      </div>
-      <label htmlFor="apiKey" style={{ fontSize: '0.8rem', display: 'block', marginBottom: '0.5rem' }}>
-        Gemini API Key:
-      </label>
-      <input
-        type="password"
-        id="apiKey"
-        className="api-key-input"
-        placeholder="Enter your API key"
-        style={{ width: '250px' }}
-        value={apiKey}
-        onChange={(e) => setApiKey(e.target.value)}
-      />
-      <button onClick={confirmKey} className="api-key-btn">
-        Confirm Key
-      </button>
-      <div className={`api-key-status ${status.type}`}>
-        {status.text}
-      </div>
-      <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer" className="api-key-link">
-        Get API key from Google AI Studio →
-      </a>
-    </div>
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>
+        <button className="api-key-toggle">
+          🔑
+        </button>
+      </SheetTrigger>
+      <SheetContent className="bg-gray-900/95 border-purple-500/50">
+        <SheetHeader>
+          <SheetTitle className="text-purple-400">Gemini API Key</SheetTitle>
+          <SheetDescription className="text-gray-400">
+            Enter your Gemini API key to unlock cosmic wisdom
+          </SheetDescription>
+        </SheetHeader>
+        <div className="mt-6 space-y-4">
+          <div>
+            <label htmlFor="apiKey" className="text-sm text-gray-300 block mb-2">
+              API Key
+            </label>
+            <Input
+              type="password"
+              id="apiKey"
+              placeholder="Enter your API key"
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+              className="bg-black/50 border-purple-500/50 text-white"
+            />
+          </div>
+          <Button onClick={confirmKey} variant="cosmic" className="w-full">
+            Confirm Key
+          </Button>
+          {status.text && (
+            <div className={`text-sm text-center ${status.type === 'success' ? 'text-green-400' : 'text-red-400'}`}>
+              {status.text}
+            </div>
+          )}
+          <a
+            href="https://aistudio.google.com/apikey"
+            target="_blank"
+            rel="noreferrer"
+            className="text-xs text-purple-400 hover:text-pink-400 block text-center transition-colors"
+          >
+            Get API key from Google AI Studio →
+          </a>
+        </div>
+      </SheetContent>
+    </Sheet>
   )
 }

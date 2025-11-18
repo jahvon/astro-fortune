@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function RevealScreen({ active, fortuneData, audioBlob, onRestart }) {
   const audioRef = useRef(null)
@@ -29,31 +31,43 @@ export default function RevealScreen({ active, fortuneData, audioBlob, onRestart
         )}
 
         {/* Fortune Cards */}
-        <div className="fortune-card mb-6">
-          <h3 className="text-3xl mb-4">Today's Fortune</h3>
-          <p className="text-lg leading-relaxed" style={{ color: 'rgba(229, 231, 235, 1)' }}>
-            {fortuneData.fullFortune}
-          </p>
-        </div>
+        <Card className="mb-6 bg-gray-900/90 border-purple-500/50">
+          <CardHeader>
+            <CardTitle className="text-3xl text-pink-400">Today's Fortune</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-lg leading-relaxed text-gray-200">
+              {fortuneData.fullFortune}
+            </p>
+          </CardContent>
+        </Card>
 
-        <div className="fortune-card mb-6">
-          <h3 className="text-2xl mb-4">Cosmic Influence</h3>
-          <p className="text-lg leading-relaxed" style={{ color: 'rgba(229, 231, 235, 1)' }}>
-            {fortuneData.cosmicInfluence}
-          </p>
-        </div>
+        <Card className="mb-6 bg-gray-900/90 border-purple-500/50">
+          <CardHeader>
+            <CardTitle className="text-2xl text-pink-400">Cosmic Influence</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-lg leading-relaxed text-gray-200">
+              {fortuneData.cosmicInfluence}
+            </p>
+          </CardContent>
+        </Card>
 
-        <div className="fortune-card mb-8">
-          <h3 className="text-2xl mb-4">Zodiac Tip</h3>
-          <p className="text-lg leading-relaxed" style={{ color: 'rgba(229, 231, 235, 1)' }}>
-            {fortuneData.astrologyTip}
-          </p>
-        </div>
+        <Card className="mb-8 bg-gray-900/90 border-purple-500/50">
+          <CardHeader>
+            <CardTitle className="text-2xl text-pink-400">Zodiac Tip</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-lg leading-relaxed text-gray-200">
+              {fortuneData.astrologyTip}
+            </p>
+          </CardContent>
+        </Card>
 
         <div className="text-center">
-          <button onClick={onRestart} className="cosmic-button">
+          <Button onClick={onRestart} variant="cosmic" size="xl">
             Seek Another Reading
-          </button>
+          </Button>
         </div>
       </div>
     </div>
