@@ -56,11 +56,13 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             padding: 2rem;
+            padding-top: 4rem;
             opacity: 0;
             transition: opacity 0.8s ease-in-out;
             pointer-events: none;
+            overflow-y: auto;
         }
 
         .screen.active {
@@ -68,49 +70,78 @@
             pointer-events: auto;
         }
 
-        /* Crystal Ball Animation */
+        /* Crystal Ball Animation - Glass ball with smoke */
         .crystal-ball {
             position: relative;
             width: 200px;
             height: 200px;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, rgba(147, 51, 234, 0.3), rgba(79, 70, 229, 0.2), transparent);
+            background:
+                radial-gradient(circle at 30% 30%,
+                    rgba(255, 255, 255, 0.9) 0%,
+                    rgba(255, 255, 255, 0.4) 5%,
+                    transparent 15%),
+                radial-gradient(circle at 50% 50%,
+                    rgba(147, 51, 234, 0.15),
+                    rgba(79, 70, 229, 0.25),
+                    rgba(17, 24, 39, 0.8));
             box-shadow:
-                0 0 60px rgba(147, 51, 234, 0.6),
-                0 0 100px rgba(79, 70, 229, 0.4),
-                inset 0 0 60px rgba(147, 51, 234, 0.3);
+                /* Outer glow */
+                0 0 40px rgba(147, 51, 234, 0.4),
+                0 0 80px rgba(79, 70, 229, 0.3),
+                /* Glass reflection */
+                inset -20px -20px 40px rgba(0, 0, 0, 0.3),
+                inset 20px 20px 40px rgba(255, 255, 255, 0.1),
+                /* Inner glow */
+                inset 0 0 60px rgba(147, 51, 234, 0.2);
             overflow: hidden;
             animation: float 3s ease-in-out infinite;
+            /* Glass effect */
+            backdrop-filter: blur(2px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
         }
 
-        .crystal-ball::before,
+        /* Smoke effect - layer 1 */
+        .crystal-ball::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            top: -25%;
+            left: -25%;
+            border-radius: 40%;
+            background:
+                radial-gradient(ellipse at 30% 40%,
+                    rgba(147, 51, 234, 0.6) 0%,
+                    rgba(147, 51, 234, 0.3) 20%,
+                    transparent 50%),
+                radial-gradient(ellipse at 70% 60%,
+                    rgba(79, 70, 229, 0.5) 0%,
+                    rgba(79, 70, 229, 0.2) 25%,
+                    transparent 55%);
+            animation: smoke-drift 8s ease-in-out infinite;
+            filter: blur(20px);
+        }
+
+        /* Smoke effect - layer 2 */
         .crystal-ball::after {
             content: '';
             position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-        }
-
-        .crystal-ball::before {
-            background: conic-gradient(
-                from 0deg,
-                transparent,
-                rgba(147, 51, 234, 0.5),
-                transparent,
-                rgba(79, 70, 229, 0.5),
-                transparent
-            );
-            animation: rotate-cw 8s linear infinite;
-        }
-
-        .crystal-ball::after {
-            background: radial-gradient(
-                circle at 50% 50%,
-                rgba(236, 72, 153, 0.3),
-                transparent 60%
-            );
-            animation: rotate-ccw 6s linear infinite, pulse 2s ease-in-out infinite;
+            width: 140%;
+            height: 140%;
+            top: -20%;
+            left: -20%;
+            border-radius: 45%;
+            background:
+                radial-gradient(ellipse at 50% 50%,
+                    rgba(236, 72, 153, 0.5) 0%,
+                    rgba(236, 72, 153, 0.2) 30%,
+                    transparent 60%),
+                radial-gradient(ellipse at 40% 70%,
+                    rgba(147, 51, 234, 0.4) 0%,
+                    transparent 50%);
+            animation: smoke-drift-reverse 10s ease-in-out infinite;
+            filter: blur(25px);
         }
 
         @keyframes float {
@@ -118,14 +149,42 @@
             50% { transform: translateY(-20px); }
         }
 
-        @keyframes rotate-cw {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        @keyframes smoke-drift {
+            0% {
+                transform: translate(0, 0) rotate(0deg) scale(1);
+                opacity: 0.8;
+            }
+            33% {
+                transform: translate(-10px, -15px) rotate(120deg) scale(1.1);
+                opacity: 0.6;
+            }
+            66% {
+                transform: translate(15px, -10px) rotate(240deg) scale(0.9);
+                opacity: 0.7;
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg) scale(1);
+                opacity: 0.8;
+            }
         }
 
-        @keyframes rotate-ccw {
-            from { transform: rotate(360deg); }
-            to { transform: rotate(0deg); }
+        @keyframes smoke-drift-reverse {
+            0% {
+                transform: translate(0, 0) rotate(0deg) scale(1);
+                opacity: 0.7;
+            }
+            33% {
+                transform: translate(12px, 10px) rotate(-100deg) scale(0.95);
+                opacity: 0.5;
+            }
+            66% {
+                transform: translate(-8px, 12px) rotate(-220deg) scale(1.05);
+                opacity: 0.6;
+            }
+            100% {
+                transform: translate(0, 0) rotate(-360deg) scale(1);
+                opacity: 0.7;
+            }
         }
 
         @keyframes pulse {
@@ -134,6 +193,13 @@
         }
 
         /* Zodiac Sign Icons */
+        .zodiac-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
         .zodiac-icon {
             width: 80px;
             height: 80px;
@@ -159,6 +225,14 @@
             border-color: rgba(236, 72, 153, 1);
             background: rgba(147, 51, 234, 0.3);
             box-shadow: 0 0 30px rgba(236, 72, 153, 0.8);
+        }
+
+        .zodiac-label {
+            font-size: 0.75rem;
+            text-align: center;
+            color: rgba(236, 72, 153, 0.8);
+            font-family: 'Inter', sans-serif;
+            text-transform: capitalize;
         }
 
         /* Buttons */
@@ -253,6 +327,35 @@
             padding: 1rem;
             border-radius: 10px;
             border: 1px solid rgba(147, 51, 234, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .api-key-container.collapsed {
+            right: -230px;
+        }
+
+        .api-key-toggle {
+            position: absolute;
+            left: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(17, 24, 39, 0.95);
+            border: 1px solid rgba(147, 51, 234, 0.5);
+            border-right: none;
+            padding: 0.5rem;
+            border-radius: 5px 0 0 5px;
+            cursor: pointer;
+            color: rgba(236, 72, 153, 1);
+            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .api-key-toggle:hover {
+            background: rgba(147, 51, 234, 0.3);
         }
 
         .api-key-input {
@@ -263,6 +366,38 @@
             border-radius: 5px;
             font-family: 'Inter', sans-serif;
             font-size: 0.9rem;
+        }
+
+        .api-key-status {
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            text-align: center;
+        }
+
+        .api-key-status.success {
+            color: #4ade80;
+        }
+
+        .api-key-status.error {
+            color: #f87171;
+        }
+
+        .api-key-btn {
+            margin-top: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(147, 51, 234, 0.6);
+            border: 1px solid rgba(147, 51, 234, 0.5);
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+
+        .api-key-btn:hover {
+            background: rgba(147, 51, 234, 0.8);
         }
 
         /* Responsive Grid */
@@ -285,7 +420,8 @@
     <canvas id="starfield"></canvas>
 
     <!-- API Key Container -->
-    <div class="api-key-container">
+    <div class="api-key-container collapsed" id="apiKeyContainer">
+        <div class="api-key-toggle" id="apiKeyToggle">🔑</div>
         <label for="apiKey" style="font-size: 0.8rem; display: block; margin-bottom: 0.5rem;">Gemini API Key:</label>
         <input
             type="password"
@@ -294,6 +430,8 @@
             placeholder="Enter your API key"
             style="width: 250px;"
         >
+        <button id="confirmApiKey" class="api-key-btn">Confirm Key</button>
+        <div id="apiKeyStatus" class="api-key-status"></div>
     </div>
 
     <!-- Screen 1: Welcome -->
@@ -317,23 +455,59 @@
                     What is your Star Sign?
                 </h2>
                 <div class="zodiac-grid">
-                    <div class="zodiac-icon" data-sign="aries" title="Aries">♈</div>
-                    <div class="zodiac-icon" data-sign="taurus" title="Taurus">♉</div>
-                    <div class="zodiac-icon" data-sign="gemini" title="Gemini">♊</div>
-                    <div class="zodiac-icon" data-sign="cancer" title="Cancer">♋</div>
-                    <div class="zodiac-icon" data-sign="leo" title="Leo">♌</div>
-                    <div class="zodiac-icon" data-sign="virgo" title="Virgo">♍</div>
-                    <div class="zodiac-icon" data-sign="libra" title="Libra">♎</div>
-                    <div class="zodiac-icon" data-sign="scorpio" title="Scorpio">♏</div>
-                    <div class="zodiac-icon" data-sign="sagittarius" title="Sagittarius">♐</div>
-                    <div class="zodiac-icon" data-sign="capricorn" title="Capricorn">♑</div>
-                    <div class="zodiac-icon" data-sign="aquarius" title="Aquarius">♒</div>
-                    <div class="zodiac-icon" data-sign="pisces" title="Pisces">♓</div>
+                    <div class="zodiac-container">
+                        <div class="zodiac-icon" data-sign="aries" title="Aries">♈</div>
+                        <div class="zodiac-label">Aries</div>
+                    </div>
+                    <div class="zodiac-container">
+                        <div class="zodiac-icon" data-sign="taurus" title="Taurus">♉</div>
+                        <div class="zodiac-label">Taurus</div>
+                    </div>
+                    <div class="zodiac-container">
+                        <div class="zodiac-icon" data-sign="gemini" title="Gemini">♊</div>
+                        <div class="zodiac-label">Gemini</div>
+                    </div>
+                    <div class="zodiac-container">
+                        <div class="zodiac-icon" data-sign="cancer" title="Cancer">♋</div>
+                        <div class="zodiac-label">Cancer</div>
+                    </div>
+                    <div class="zodiac-container">
+                        <div class="zodiac-icon" data-sign="leo" title="Leo">♌</div>
+                        <div class="zodiac-label">Leo</div>
+                    </div>
+                    <div class="zodiac-container">
+                        <div class="zodiac-icon" data-sign="virgo" title="Virgo">♍</div>
+                        <div class="zodiac-label">Virgo</div>
+                    </div>
+                    <div class="zodiac-container">
+                        <div class="zodiac-icon" data-sign="libra" title="Libra">♎</div>
+                        <div class="zodiac-label">Libra</div>
+                    </div>
+                    <div class="zodiac-container">
+                        <div class="zodiac-icon" data-sign="scorpio" title="Scorpio">♏</div>
+                        <div class="zodiac-label">Scorpio</div>
+                    </div>
+                    <div class="zodiac-container">
+                        <div class="zodiac-icon" data-sign="sagittarius" title="Sagittarius">♐</div>
+                        <div class="zodiac-label">Sagittarius</div>
+                    </div>
+                    <div class="zodiac-container">
+                        <div class="zodiac-icon" data-sign="capricorn" title="Capricorn">♑</div>
+                        <div class="zodiac-label">Capricorn</div>
+                    </div>
+                    <div class="zodiac-container">
+                        <div class="zodiac-icon" data-sign="aquarius" title="Aquarius">♒</div>
+                        <div class="zodiac-label">Aquarius</div>
+                    </div>
+                    <div class="zodiac-container">
+                        <div class="zodiac-icon" data-sign="pisces" title="Pisces">♓</div>
+                        <div class="zodiac-label">Pisces</div>
+                    </div>
                 </div>
             </div>
 
             <!-- Question 2: Topic -->
-            <div id="question-2" class="question-container mb-12" style="opacity: 0; transition: opacity 0.5s;">
+            <div id="question-2" class="question-container mb-12">
                 <h2 class="text-4xl mb-8 text-center heading-font" style="color: rgba(236, 72, 153, 1);">
                     What path do you wish to illuminate?
                 </h2>
@@ -346,7 +520,7 @@
             </div>
 
             <!-- Question 3: Feeling -->
-            <div id="question-3" class="question-container mb-12" style="opacity: 0; transition: opacity 0.5s;">
+            <div id="question-3" class="question-container mb-12">
                 <h2 class="text-4xl mb-8 text-center heading-font" style="color: rgba(236, 72, 153, 1);">
                     How is your spirit today?
                 </h2>
@@ -360,7 +534,7 @@
             </div>
 
             <!-- Final Button -->
-            <div id="consult-button-container" class="text-center mt-12" style="opacity: 0; transition: opacity 0.5s;">
+            <div id="consult-button-container" class="text-center mt-12">
                 <button id="btn-consult" class="cosmic-button">Consult the Cosmos</button>
             </div>
         </div>
@@ -521,11 +695,6 @@
                 zodiacIcons.forEach(i => i.classList.remove('selected'));
                 icon.classList.add('selected');
                 appState.zodiacSign = icon.dataset.sign;
-
-                // Show next question
-                setTimeout(() => {
-                    document.getElementById('question-2').style.opacity = '1';
-                }, 300);
             });
         });
 
@@ -536,11 +705,6 @@
                 topicButtons.forEach(b => b.classList.remove('selected'));
                 button.classList.add('selected');
                 appState.topic = button.dataset.topic;
-
-                // Show next question
-                setTimeout(() => {
-                    document.getElementById('question-3').style.opacity = '1';
-                }, 300);
             });
         });
 
@@ -551,11 +715,6 @@
                 feelingButtons.forEach(b => b.classList.remove('selected'));
                 button.classList.add('selected');
                 appState.feeling = button.dataset.feeling;
-
-                // Show consult button
-                setTimeout(() => {
-                    document.getElementById('consult-button-container').style.opacity = '1';
-                }, 300);
             });
         });
 
@@ -640,14 +799,15 @@ Then, weave all this information together (my sign, my feeling, my topic, and th
             const requestBody = {
                 contents: [{
                     parts: [{
-                        text: `Say in a clear, soothing, and slightly mysterious female voice: "${textToSpeak}"`
+                        text: textToSpeak
                     }]
                 }],
                 generationConfig: {
+                    responseModalities: ["AUDIO"],
                     speechConfig: {
                         voiceConfig: {
                             prebuiltVoiceConfig: {
-                                voiceName: "Callirrhoe"
+                                voiceName: "Puck"
                             }
                         }
                     }
@@ -666,27 +826,38 @@ Then, weave all this information together (my sign, my feeling, my topic, and th
             );
 
             if (!response.ok) {
-                throw new Error('TTS API Error');
+                const errorData = await response.json();
+                throw new Error(`TTS API Error: ${errorData.error?.message || 'Unknown error'}`);
             }
 
             const data = await response.json();
+            console.log('TTS Response:', data);
 
-            // Extract audio data
-            if (data.candidates && data.candidates[0].content.parts[0].inlineData) {
-                const audioData = data.candidates[0].content.parts[0].inlineData.data;
-                return base64ToWavBlob(audioData);
+            // Extract audio data - check multiple possible locations
+            if (data.candidates && data.candidates[0]) {
+                const candidate = data.candidates[0];
+
+                // Check for inline data in parts
+                if (candidate.content && candidate.content.parts) {
+                    for (const part of candidate.content.parts) {
+                        if (part.inlineData && part.inlineData.data) {
+                            const mimeType = part.inlineData.mimeType || 'audio/wav';
+                            return base64ToAudioBlob(part.inlineData.data, mimeType);
+                        }
+                    }
+                }
             }
 
             throw new Error('No audio data in response');
         }
 
-        function base64ToWavBlob(base64) {
+        function base64ToAudioBlob(base64, mimeType = 'audio/wav') {
             const binaryString = atob(base64);
             const bytes = new Uint8Array(binaryString.length);
             for (let i = 0; i < binaryString.length; i++) {
                 bytes[i] = binaryString.charCodeAt(i);
             }
-            return new Blob([bytes], { type: 'audio/wav' });
+            return new Blob([bytes], { type: mimeType });
         }
 
         // ===========================
@@ -782,12 +953,70 @@ Then, weave all this information together (my sign, my feeling, my topic, and th
             // Reset UI
             document.querySelectorAll('.zodiac-icon').forEach(icon => icon.classList.remove('selected'));
             document.querySelectorAll('.option-button').forEach(btn => btn.classList.remove('selected'));
-            document.getElementById('question-2').style.opacity = '0';
-            document.getElementById('question-3').style.opacity = '0';
-            document.getElementById('consult-button-container').style.opacity = '0';
             document.getElementById('audio-container').style.display = 'block';
 
             switchScreen('screen-reveal', 'screen-welcome');
+        });
+
+        // ===========================
+        // API Key Management
+        // ===========================
+        let apiKeyConfirmed = false;
+
+        document.getElementById('apiKeyToggle').addEventListener('click', () => {
+            const container = document.getElementById('apiKeyContainer');
+            container.classList.toggle('collapsed');
+        });
+
+        document.getElementById('confirmApiKey').addEventListener('click', async () => {
+            const apiKey = document.getElementById('apiKey').value;
+            const statusEl = document.getElementById('apiKeyStatus');
+
+            if (!apiKey) {
+                statusEl.textContent = 'Please enter an API key';
+                statusEl.className = 'api-key-status error';
+                return;
+            }
+
+            statusEl.textContent = 'Validating...';
+            statusEl.className = 'api-key-status';
+
+            try {
+                // Test the API key with a simple request
+                const response = await fetch(
+                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [{
+                                    text: 'test'
+                                }]
+                            }]
+                        })
+                    }
+                );
+
+                if (response.ok) {
+                    apiKeyConfirmed = true;
+                    statusEl.textContent = '✓ API Key Confirmed';
+                    statusEl.className = 'api-key-status success';
+
+                    // Auto-collapse after 2 seconds
+                    setTimeout(() => {
+                        document.getElementById('apiKeyContainer').classList.add('collapsed');
+                    }, 2000);
+                } else {
+                    statusEl.textContent = '✗ Invalid API Key';
+                    statusEl.className = 'api-key-status error';
+                }
+            } catch (error) {
+                statusEl.textContent = '✗ Validation Failed';
+                statusEl.className = 'api-key-status error';
+            }
         });
 
         // ===========================
