@@ -3,8 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main
-      - claude/fix-layout-scrolling-ui-01LGQarUDj8ZPVLRqNChFukd
+      - '**'  # Deploy from all branches
 
   # Allow manual trigger from Actions tab
   workflow_dispatch:
