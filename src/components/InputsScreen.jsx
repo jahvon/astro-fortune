@@ -75,7 +75,7 @@ export default function InputsScreen({ active, appState, setAppState, onConsult 
         {/* Question 1: Star Sign */}
         {currentStep === 1 && (
           <div className="question-container mb-12">
-            <h2 className="text-4xl mb-8 text-center heading-font" style={{ color: 'rgba(236, 72, 153, 1)' }}>
+            <h2 className="text-4xl mb-8 text-center heading-font cosmic-heading">
               What is your Star Sign?
             </h2>
             <div className="zodiac-grid">
@@ -98,7 +98,7 @@ export default function InputsScreen({ active, appState, setAppState, onConsult 
         {/* Question 2: Topic */}
         {currentStep === 2 && (
           <div className="question-container mb-12">
-            <h2 className="text-4xl mb-8 text-center heading-font" style={{ color: 'rgba(236, 72, 153, 1)' }}>
+            <h2 className="text-4xl mb-8 text-center heading-font cosmic-heading">
               What path do you wish to illuminate?
             </h2>
             <div className="flex flex-wrap gap-4 justify-center">
@@ -119,7 +119,7 @@ export default function InputsScreen({ active, appState, setAppState, onConsult 
         {/* Question 3: Feeling */}
         {currentStep === 3 && (
           <div className="question-container mb-12">
-            <h2 className="text-4xl mb-8 text-center heading-font" style={{ color: 'rgba(236, 72, 153, 1)' }}>
+            <h2 className="text-4xl mb-8 text-center heading-font cosmic-heading">
               How is your spirit today?
             </h2>
             <div className="flex flex-wrap gap-4 justify-center">

@@ -4,48 +4,27 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Midnight Amethyst Color Palette */
+    --background: 240 10% 4%;              /* Midnight - very dark blue */
+    --foreground: 240 4% 90%;              /* Starlight - soft off-white */
+    --card: 240 10% 11%;                   /* Deep Indigo - dark blue-gray for cards */
+    --card-foreground: 240 4% 90%;         /* Starlight */
+    --popover: 240 10% 11%;
+    --popover-foreground: 240 4% 90%;
+    --primary: 275 80% 70%;                /* Glowing Amethyst - vibrant purple */
+    --primary-foreground: 275 100% 10%;   /* Amethyst Deep - dark purple for text on buttons */
+    --secondary: 180 70% 60%;              /* Celestial Cyan - bright magical teal/cyan */
+    --secondary-foreground: 240 10% 4%;
+    --muted: 240 10% 11%;
+    --muted-foreground: 240 5% 65%;        /* Faded Constellation - grayish-white */
+    --accent: 180 70% 60%;                 /* Celestial Cyan */
+    --accent-foreground: 240 10% 4%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 240 4% 25%;                  /* Shadow - subtle border color */
+    --input: 240 4% 25%;
+    --ring: 275 80% 70%;                   /* Glowing Amethyst */
     --radius: 0.5rem;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
   }
 }
 
@@ -69,16 +48,23 @@ html, body, #root {
 
 body {
   font-family: 'Inter', sans-serif;
-  background: #0a0014;
-  color: #ffffff;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
 }
 
 h1, h2, h3 {
   font-family: 'Cinzel', serif;
+  color: hsl(var(--primary));
+  text-shadow: 0 0 20px hsl(var(--primary) / 0.6);
 }
 
 .heading-font {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Cinzel', serif;
+}
+
+.cosmic-heading {
+  color: hsl(var(--primary));
+  text-shadow: 0 0 20px hsl(var(--primary) / 0.7);
 }
 
 /* 3D Background Canvas */
@@ -128,18 +114,18 @@ h1, h2, h3 {
       rgba(255, 255, 255, 0.4) 5%,
       transparent 15%),
     radial-gradient(circle at 50% 50%,
-      rgba(147, 51, 234, 0.15),
-      rgba(79, 70, 229, 0.25),
-      rgba(17, 24, 39, 0.8));
+      hsl(275, 80%, 70%, 0.15),
+      hsl(180, 70%, 60%, 0.25),
+      hsl(240, 10%, 11%, 0.8));
   box-shadow:
-    /* Outer glow */
-    0 0 40px rgba(147, 51, 234, 0.4),
-    0 0 80px rgba(79, 70, 229, 0.3),
+    /* Outer glow - Glowing Amethyst */
+    0 0 40px hsl(275, 80%, 70%, 0.5),
+    0 0 80px hsl(275, 80%, 70%, 0.3),
     /* Glass reflection */
     inset -20px -20px 40px rgba(0, 0, 0, 0.3),
     inset 20px 20px 40px rgba(255, 255, 255, 0.1),
-    /* Inner glow */
-    inset 0 0 60px rgba(147, 51, 234, 0.2);
+    /* Inner glow - Glowing Amethyst */
+    inset 0 0 60px hsl(275, 80%, 70%, 0.3);
   overflow: hidden;
   animation: float 3s ease-in-out infinite;
   /* Glass effect */
@@ -152,7 +138,7 @@ h1, h2, h3 {
   height: 300px;
 }
 
-/* Smoke effect - layer 1 */
+/* Smoke effect - layer 1 - Glowing Amethyst and Celestial Cyan */
 .crystal-ball::before {
   content: '';
   position: absolute;
@@ -163,18 +149,18 @@ h1, h2, h3 {
   border-radius: 40%;
   background:
     radial-gradient(ellipse at 30% 40%,
-      rgba(147, 51, 234, 0.6) 0%,
-      rgba(147, 51, 234, 0.3) 20%,
+      hsl(275, 80%, 70%, 0.6) 0%,
+      hsl(275, 80%, 70%, 0.3) 20%,
       transparent 50%),
     radial-gradient(ellipse at 70% 60%,
-      rgba(79, 70, 229, 0.5) 0%,
-      rgba(79, 70, 229, 0.2) 25%,
+      hsl(180, 70%, 60%, 0.5) 0%,
+      hsl(180, 70%, 60%, 0.2) 25%,
       transparent 55%);
   animation: smoke-drift 8s ease-in-out infinite;
   filter: blur(20px);
 }
 
-/* Smoke effect - layer 2 */
+/* Smoke effect - layer 2 - Glowing Amethyst */
 .crystal-ball::after {
   content: '';
   position: absolute;
@@ -185,11 +171,11 @@ h1, h2, h3 {
   border-radius: 45%;
   background:
     radial-gradient(ellipse at 50% 50%,
-      rgba(236, 72, 153, 0.5) 0%,
-      rgba(236, 72, 153, 0.2) 30%,
+      hsl(275, 80%, 70%, 0.5) 0%,
+      hsl(275, 80%, 70%, 0.2) 30%,
       transparent 60%),
     radial-gradient(ellipse at 40% 70%,
-      rgba(147, 51, 234, 0.4) 0%,
+      hsl(180, 70%, 60%, 0.4) 0%,
       transparent 50%);
   animation: smoke-drift-reverse 10s ease-in-out infinite;
   filter: blur(25px);
@@ -255,8 +241,9 @@ h1, h2, h3 {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  border: 2px solid rgba(147, 51, 234, 0.5);
-  background: rgba(17, 24, 39, 0.8);
+  border: 2px solid hsl(var(--primary) / 0.5);
+  background: hsl(var(--card) / 0.8);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -268,20 +255,20 @@ h1, h2, h3 {
 
 .zodiac-icon:hover {
   transform: scale(1.1);
-  border-color: rgba(147, 51, 234, 1);
-  box-shadow: 0 0 20px rgba(147, 51, 234, 0.6);
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 20px hsl(var(--primary) / 0.6);
 }
 
 .zodiac-icon.selected {
-  border-color: rgba(236, 72, 153, 1);
-  background: rgba(147, 51, 234, 0.3);
-  box-shadow: 0 0 30px rgba(236, 72, 153, 0.8);
+  border-color: hsl(var(--primary));
+  background: hsl(var(--primary) / 0.3);
+  box-shadow: 0 0 30px hsl(var(--primary) / 0.8);
 }
 
 .zodiac-label {
   font-size: 0.75rem;
   text-align: center;
-  color: rgba(236, 72, 153, 0.8);
+  color: hsl(var(--primary) / 0.9);
   font-family: 'Inter', sans-serif;
   text-transform: capitalize;
 }
@@ -290,22 +277,23 @@ h1, h2, h3 {
 .cosmic-button {
   padding: 1rem 2.5rem;
   font-size: 1.1rem;
-  font-family: 'Cinzel', serif;
-  background: linear-gradient(135deg, rgba(147, 51, 234, 0.8), rgba(79, 70, 229, 0.8));
-  border: 2px solid rgba(147, 51, 234, 0.5);
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  background: hsl(var(--primary));
+  border: 2px solid hsl(var(--primary) / 0.7);
   border-radius: 50px;
-  color: white;
+  color: hsl(var(--primary-foreground));
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 0 20px rgba(147, 51, 234, 0.4);
+  box-shadow: 0 0 20px hsl(var(--primary) / 0.5);
   text-transform: uppercase;
   letter-spacing: 2px;
 }
 
 .cosmic-button:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 40px rgba(147, 51, 234, 0.8);
-  border-color: rgba(236, 72, 153, 1);
+  box-shadow: 0 0 40px hsl(var(--primary) / 0.8);
+  border-color: hsl(var(--primary));
 }
 
 .cosmic-button:disabled {
@@ -317,32 +305,34 @@ h1, h2, h3 {
 .option-button {
   padding: 0.8rem 2rem;
   font-family: 'Inter', sans-serif;
-  background: rgba(17, 24, 39, 0.8);
-  border: 2px solid rgba(147, 51, 234, 0.5);
+  background: hsl(var(--card) / 0.8);
+  backdrop-filter: blur(4px);
+  border: 2px solid hsl(var(--primary) / 0.5);
   border-radius: 25px;
-  color: white;
+  color: hsl(var(--foreground));
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .option-button:hover {
-  background: rgba(147, 51, 234, 0.3);
-  border-color: rgba(147, 51, 234, 1);
+  background: hsl(var(--primary) / 0.2);
+  border-color: hsl(var(--primary));
   transform: scale(1.05);
+  box-shadow: 0 0 15px hsl(var(--primary) / 0.4);
 }
 
 .option-button.selected {
-  background: rgba(147, 51, 234, 0.5);
-  border-color: rgba(236, 72, 153, 1);
-  box-shadow: 0 0 20px rgba(236, 72, 153, 0.6);
+  background: hsl(var(--primary) / 0.3);
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 20px hsl(var(--primary) / 0.6);
 }
 
 /* Loading Messages */
 .loading-message {
   font-size: 1.5rem;
-  font-family: 'Cormorant Garamond', serif;
-  color: rgba(236, 72, 153, 1);
-  text-shadow: 0 0 10px rgba(236, 72, 153, 0.6);
+  font-family: 'Cinzel', serif;
+  color: hsl(var(--primary));
+  text-shadow: 0 0 15px hsl(var(--primary) / 0.7);
   animation: fadeInOut 2s ease-in-out infinite;
 }
 
@@ -353,18 +343,19 @@ h1, h2, h3 {
 
 /* Fortune Display */
 .fortune-card {
-  background: rgba(17, 24, 39, 0.9);
-  border: 2px solid rgba(147, 51, 234, 0.5);
+  background: hsl(var(--card) / 0.95);
+  backdrop-filter: blur(8px);
+  border: 2px solid hsl(var(--primary) / 0.5);
   border-radius: 20px;
   padding: 2rem;
   max-width: 800px;
   margin: 1rem;
-  box-shadow: 0 0 40px rgba(147, 51, 234, 0.3);
+  box-shadow: 0 0 40px hsl(var(--primary) / 0.3);
 }
 
 .fortune-card h3 {
-  color: rgba(236, 72, 153, 1);
-  text-shadow: 0 0 10px rgba(236, 72, 153, 0.6);
+  color: hsl(var(--primary));
+  text-shadow: 0 0 15px hsl(var(--primary) / 0.7);
   margin-bottom: 1rem;
 }
 
@@ -374,10 +365,11 @@ h1, h2, h3 {
   top: 1rem;
   right: 1rem;
   z-index: 100;
-  background: rgba(17, 24, 39, 0.95);
+  background: hsl(var(--card) / 0.95);
+  backdrop-filter: blur(8px);
   padding: 1rem;
   border-radius: 10px;
-  border: 1px solid rgba(147, 51, 234, 0.5);
+  border: 1px solid hsl(var(--primary) / 0.5);
   transition: all 0.3s ease;
 }
 
@@ -390,33 +382,43 @@ h1, h2, h3 {
   left: -40px;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(17, 24, 39, 0.95);
-  border: 1px solid rgba(147, 51, 234, 0.5);
+  background: hsl(var(--card) / 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid hsl(var(--primary) / 0.5);
   border-right: none;
   padding: 0.5rem;
   border-radius: 5px 0 0 5px;
   cursor: pointer;
-  color: rgba(236, 72, 153, 1);
+  color: hsl(var(--primary));
   font-size: 1.2rem;
   width: 40px;
   height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease;
 }
 
 .api-key-toggle:hover {
-  background: rgba(147, 51, 234, 0.3);
+  background: hsl(var(--primary) / 0.3);
+  box-shadow: 0 0 15px hsl(var(--primary) / 0.4);
 }
 
 .api-key-input {
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(147, 51, 234, 0.5);
-  color: white;
+  background: hsl(var(--background) / 0.5);
+  border: 1px solid hsl(var(--primary) / 0.5);
+  color: hsl(var(--foreground));
   padding: 0.5rem;
   border-radius: 5px;
   font-family: 'Inter', sans-serif;
   font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.api-key-input:focus {
+  outline: none;
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 10px hsl(var(--primary) / 0.3);
 }
 
 .api-key-status {
@@ -426,29 +428,30 @@ h1, h2, h3 {
 }
 
 .api-key-status.success {
-  color: #4ade80;
+  color: hsl(var(--secondary));
 }
 
 .api-key-status.error {
-  color: #f87171;
+  color: hsl(var(--destructive));
 }
 
 .api-key-btn {
   margin-top: 0.5rem;
   padding: 0.5rem 1rem;
-  background: rgba(147, 51, 234, 0.6);
-  border: 1px solid rgba(147, 51, 234, 0.5);
+  background: hsl(var(--primary) / 0.6);
+  border: 1px solid hsl(var(--primary) / 0.5);
   border-radius: 5px;
-  color: white;
+  color: hsl(var(--primary-foreground));
   cursor: pointer;
   font-family: 'Inter', sans-serif;
   font-size: 0.85rem;
   width: 100%;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .api-key-btn:hover {
-  background: rgba(147, 51, 234, 0.8);
+  background: hsl(var(--primary) / 0.8);
+  box-shadow: 0 0 15px hsl(var(--primary) / 0.4);
 }
 
 .api-key-link {
@@ -456,13 +459,14 @@ h1, h2, h3 {
   margin-top: 0.5rem;
   font-size: 0.7rem;
   text-align: center;
-  color: rgba(147, 51, 234, 0.9);
+  color: hsl(var(--primary) / 0.9);
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .api-key-link:hover {
-  color: rgba(236, 72, 153, 1);
+  color: hsl(var(--primary));
+  text-shadow: 0 0 10px hsl(var(--primary) / 0.5);
 }
 
 /* Responsive Grid */

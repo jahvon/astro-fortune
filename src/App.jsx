@@ -99,7 +99,9 @@ Then, weave all this information together (my sign, my feeling, my topic, and th
   "fullFortune": "A 2-3 paragraph detailed reading.",
   "cosmicInfluence": "A 1-paragraph explanation of which planetary transit is influencing this fortune.",
   "astrologyTip": "A single, actionable sentence of advice."
-}`
+}
+
+IMPORTANT: Ensure all string values in the JSON properly escape any quotes or special characters. Return ONLY the JSON object, with no additional text before or after.`
 
   const requestBody = {
     contents: [{
@@ -112,7 +114,7 @@ Then, weave all this information together (my sign, my feeling, my topic, and th
     }],
     systemInstruction: {
       parts: [{
-        text: "You are a mystical, wise, and comforting modern astrologer. You provide insightful, poetic, and helpful guidance based on the stars. Your tone is enigmatic but kind. Your response MUST be a valid JSON object with no additional text before or after the JSON."
+        text: "You are a mystical, wise, and comforting modern astrologer. You provide insightful, poetic, and helpful guidance based on the stars. Your tone is enigmatic but kind. Your response MUST be a valid JSON object with properly escaped strings. All quotes within string values must be escaped with backslashes. Return ONLY the JSON object with no markdown formatting, no code blocks, and no additional text."
       }]
     },
     generationConfig: {
@@ -120,6 +122,7 @@ Then, weave all this information together (my sign, my feeling, my topic, and th
       topP: 0.95,
       topK: 40,
       maxOutputTokens: 2048,
+      responseMimeType: "application/json"
     }
   }
 
@@ -142,14 +145,26 @@ Then, weave all this information together (my sign, my feeling, my topic, and th
   const data = await response.json()
   const responseText = data.candidates[0].content.parts[0].text
 
+  // Clean up the response text
   let jsonText = responseText.trim()
+
+  // Remove markdown code blocks if present
   if (jsonText.startsWith('```json')) {
-    jsonText = jsonText.replace(/```json\n?/g, '').replace(/```\n?/g, '')
+    jsonText = jsonText.replace(/```json\n?/g, '').replace(/```\n?$/g, '')
   } else if (jsonText.startsWith('```')) {
-    jsonText = jsonText.replace(/```\n?/g, '')
+    jsonText = jsonText.replace(/```\n?/g, '').replace(/```\n?$/g, '')
   }
 
-  return JSON.parse(jsonText)
+  jsonText = jsonText.trim()
+
+  // Try to parse the JSON
+  try {
+    return JSON.parse(jsonText)
+  } catch (error) {
+    console.error('JSON Parse Error:', error)
+    console.error('Response text:', jsonText)
+    throw new Error(`Failed to parse fortune response: ${error.message}`)
+  }
 }
 
 async function getSpeech(apiKey, textToSpeak) {
