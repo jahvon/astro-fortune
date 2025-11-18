@@ -134,6 +134,14 @@
         }
 
         /* Zodiac Sign Icons */
+        .zodiac-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
         .zodiac-icon {
             width: 80px;
             height: 80px;
@@ -144,21 +152,37 @@
             align-items: center;
             justify-content: center;
             font-size: 2rem;
-            cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
         }
 
-        .zodiac-icon:hover {
+        .zodiac-label {
+            font-size: 0.85rem;
+            color: rgba(147, 51, 234, 0.8);
+            text-transform: capitalize;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .zodiac-container:hover .zodiac-icon {
             transform: scale(1.1);
             border-color: rgba(147, 51, 234, 1);
             box-shadow: 0 0 20px rgba(147, 51, 234, 0.6);
         }
 
-        .zodiac-icon.selected {
+        .zodiac-container:hover .zodiac-label {
+            color: rgba(147, 51, 234, 1);
+        }
+
+        .zodiac-container.selected .zodiac-icon {
             border-color: rgba(236, 72, 153, 1);
             background: rgba(147, 51, 234, 0.3);
             box-shadow: 0 0 30px rgba(236, 72, 153, 0.8);
+        }
+
+        .zodiac-container.selected .zodiac-label {
+            color: rgba(236, 72, 153, 1);
+            font-weight: 600;
         }
 
         /* Buttons */
@@ -255,6 +279,13 @@
             border: 1px solid rgba(147, 51, 234, 0.5);
         }
 
+        .api-key-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
         .api-key-input {
             background: rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(147, 51, 234, 0.5);
@@ -263,6 +294,17 @@
             border-radius: 5px;
             font-family: 'Inter', sans-serif;
             font-size: 0.9rem;
+        }
+
+        .api-key-status {
+            font-size: 1.2rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .api-key-status.valid {
+            opacity: 1;
+            color: #10b981;
         }
 
         /* Responsive Grid */
@@ -287,13 +329,16 @@
     <!-- API Key Container -->
     <div class="api-key-container">
         <label for="apiKey" style="font-size: 0.8rem; display: block; margin-bottom: 0.5rem;">Gemini API Key:</label>
-        <input
-            type="password"
-            id="apiKey"
-            class="api-key-input"
-            placeholder="Enter your API key"
-            style="width: 250px;"
-        >
+        <div class="api-key-input-wrapper">
+            <input
+                type="password"
+                id="apiKey"
+                class="api-key-input"
+                placeholder="Enter your API key"
+                style="width: 250px;"
+            >
+            <span id="apiKeyStatus" class="api-key-status">✓</span>
+        </div>
     </div>
 
     <!-- Screen 1: Welcome -->
@@ -317,18 +362,54 @@
                     What is your Star Sign?
                 </h2>
                 <div class="zodiac-grid">
-                    <div class="zodiac-icon" data-sign="aries" title="Aries">♈</div>
-                    <div class="zodiac-icon" data-sign="taurus" title="Taurus">♉</div>
-                    <div class="zodiac-icon" data-sign="gemini" title="Gemini">♊</div>
-                    <div class="zodiac-icon" data-sign="cancer" title="Cancer">♋</div>
-                    <div class="zodiac-icon" data-sign="leo" title="Leo">♌</div>
-                    <div class="zodiac-icon" data-sign="virgo" title="Virgo">♍</div>
-                    <div class="zodiac-icon" data-sign="libra" title="Libra">♎</div>
-                    <div class="zodiac-icon" data-sign="scorpio" title="Scorpio">♏</div>
-                    <div class="zodiac-icon" data-sign="sagittarius" title="Sagittarius">♐</div>
-                    <div class="zodiac-icon" data-sign="capricorn" title="Capricorn">♑</div>
-                    <div class="zodiac-icon" data-sign="aquarius" title="Aquarius">♒</div>
-                    <div class="zodiac-icon" data-sign="pisces" title="Pisces">♓</div>
+                    <div class="zodiac-container" data-sign="aries">
+                        <div class="zodiac-icon">♈</div>
+                        <div class="zodiac-label">Aries</div>
+                    </div>
+                    <div class="zodiac-container" data-sign="taurus">
+                        <div class="zodiac-icon">♉</div>
+                        <div class="zodiac-label">Taurus</div>
+                    </div>
+                    <div class="zodiac-container" data-sign="gemini">
+                        <div class="zodiac-icon">♊</div>
+                        <div class="zodiac-label">Gemini</div>
+                    </div>
+                    <div class="zodiac-container" data-sign="cancer">
+                        <div class="zodiac-icon">♋</div>
+                        <div class="zodiac-label">Cancer</div>
+                    </div>
+                    <div class="zodiac-container" data-sign="leo">
+                        <div class="zodiac-icon">♌</div>
+                        <div class="zodiac-label">Leo</div>
+                    </div>
+                    <div class="zodiac-container" data-sign="virgo">
+                        <div class="zodiac-icon">♍</div>
+                        <div class="zodiac-label">Virgo</div>
+                    </div>
+                    <div class="zodiac-container" data-sign="libra">
+                        <div class="zodiac-icon">♎</div>
+                        <div class="zodiac-label">Libra</div>
+                    </div>
+                    <div class="zodiac-container" data-sign="scorpio">
+                        <div class="zodiac-icon">♏</div>
+                        <div class="zodiac-label">Scorpio</div>
+                    </div>
+                    <div class="zodiac-container" data-sign="sagittarius">
+                        <div class="zodiac-icon">♐</div>
+                        <div class="zodiac-label">Sagittarius</div>
+                    </div>
+                    <div class="zodiac-container" data-sign="capricorn">
+                        <div class="zodiac-icon">♑</div>
+                        <div class="zodiac-label">Capricorn</div>
+                    </div>
+                    <div class="zodiac-container" data-sign="aquarius">
+                        <div class="zodiac-icon">♒</div>
+                        <div class="zodiac-label">Aquarius</div>
+                    </div>
+                    <div class="zodiac-container" data-sign="pisces">
+                        <div class="zodiac-icon">♓</div>
+                        <div class="zodiac-label">Pisces</div>
+                    </div>
                 </div>
             </div>
 
@@ -514,17 +595,32 @@
         // Screen 2: Inputs
         // ===========================
 
-        // Zodiac Selection
-        const zodiacIcons = document.querySelectorAll('.zodiac-icon');
-        zodiacIcons.forEach(icon => {
-            icon.addEventListener('click', () => {
-                zodiacIcons.forEach(i => i.classList.remove('selected'));
-                icon.classList.add('selected');
-                appState.zodiacSign = icon.dataset.sign;
+        // API Key Validation
+        const apiKeyInput = document.getElementById('apiKey');
+        const apiKeyStatus = document.getElementById('apiKeyStatus');
 
-                // Show next question
+        apiKeyInput.addEventListener('input', () => {
+            const key = apiKeyInput.value.trim();
+            if (key.length > 20) { // Basic validation - API keys are typically long
+                apiKeyStatus.classList.add('valid');
+            } else {
+                apiKeyStatus.classList.remove('valid');
+            }
+        });
+
+        // Zodiac Selection
+        const zodiacContainers = document.querySelectorAll('.zodiac-container');
+        zodiacContainers.forEach(container => {
+            container.addEventListener('click', () => {
+                zodiacContainers.forEach(c => c.classList.remove('selected'));
+                container.classList.add('selected');
+                appState.zodiacSign = container.dataset.sign;
+
+                // Show next question and scroll to it
                 setTimeout(() => {
-                    document.getElementById('question-2').style.opacity = '1';
+                    const question2 = document.getElementById('question-2');
+                    question2.style.opacity = '1';
+                    question2.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }, 300);
             });
         });
@@ -537,9 +633,11 @@
                 button.classList.add('selected');
                 appState.topic = button.dataset.topic;
 
-                // Show next question
+                // Show next question and scroll to it
                 setTimeout(() => {
-                    document.getElementById('question-3').style.opacity = '1';
+                    const question3 = document.getElementById('question-3');
+                    question3.style.opacity = '1';
+                    question3.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }, 300);
             });
         });
@@ -552,9 +650,11 @@
                 button.classList.add('selected');
                 appState.feeling = button.dataset.feeling;
 
-                // Show consult button
+                // Show consult button and scroll to it
                 setTimeout(() => {
-                    document.getElementById('consult-button-container').style.opacity = '1';
+                    const consultContainer = document.getElementById('consult-button-container');
+                    consultContainer.style.opacity = '1';
+                    consultContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }, 300);
             });
         });
@@ -780,7 +880,7 @@ Then, weave all this information together (my sign, my feeling, my topic, and th
             appState.feeling = null;
 
             // Reset UI
-            document.querySelectorAll('.zodiac-icon').forEach(icon => icon.classList.remove('selected'));
+            document.querySelectorAll('.zodiac-container').forEach(container => container.classList.remove('selected'));
             document.querySelectorAll('.option-button').forEach(btn => btn.classList.remove('selected'));
             document.getElementById('question-2').style.opacity = '0';
             document.getElementById('question-3').style.opacity = '0';
