@@ -359,115 +359,32 @@ h1, h2, h3 {
   margin-bottom: 1rem;
 }
 
-/* API Key Input */
-.api-key-container {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 100;
-  background: hsl(var(--card) / 0.95);
-  backdrop-filter: blur(8px);
-  padding: 1rem;
-  border-radius: 10px;
-  border: 1px solid hsl(var(--primary) / 0.5);
-  transition: all 0.3s ease;
-}
-
-.api-key-container.collapsed {
-  right: -320px;
-}
-
+/* API Key Toggle Button */
 .api-key-toggle {
-  position: absolute;
-  left: -40px;
-  top: 50%;
-  transform: translateY(-50%);
   background: hsl(var(--card) / 0.95);
   backdrop-filter: blur(8px);
-  border: 1px solid hsl(var(--primary) / 0.5);
-  border-right: none;
-  padding: 0.5rem;
-  border-radius: 5px 0 0 5px;
+  border: 2px solid hsl(var(--primary) / 0.5);
+  padding: 0.75rem;
+  border-radius: 12px;
   cursor: pointer;
   color: hsl(var(--primary));
-  font-size: 1.2rem;
-  width: 40px;
-  height: 40px;
+  font-size: 1.5rem;
+  width: 56px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
+  box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
 }
 
 .api-key-toggle:hover {
   background: hsl(var(--primary) / 0.3);
-  box-shadow: 0 0 15px hsl(var(--primary) / 0.4);
-}
-
-.api-key-input {
-  background: hsl(var(--background) / 0.5);
-  border: 1px solid hsl(var(--primary) / 0.5);
-  color: hsl(var(--foreground));
-  padding: 0.5rem;
-  border-radius: 5px;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
-}
-
-.api-key-input:focus {
-  outline: none;
   border-color: hsl(var(--primary));
-  box-shadow: 0 0 10px hsl(var(--primary) / 0.3);
+  box-shadow: 0 0 30px hsl(var(--primary) / 0.6);
+  transform: scale(1.05);
 }
 
-.api-key-status {
-  margin-top: 0.5rem;
-  font-size: 0.75rem;
-  text-align: center;
-}
-
-.api-key-status.success {
-  color: hsl(var(--secondary));
-}
-
-.api-key-status.error {
-  color: hsl(var(--destructive));
-}
-
-.api-key-btn {
-  margin-top: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: hsl(var(--primary) / 0.6);
-  border: 1px solid hsl(var(--primary) / 0.5);
-  border-radius: 5px;
-  color: hsl(var(--primary-foreground));
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.85rem;
-  width: 100%;
-  transition: all 0.3s ease;
-}
-
-.api-key-btn:hover {
-  background: hsl(var(--primary) / 0.8);
-  box-shadow: 0 0 15px hsl(var(--primary) / 0.4);
-}
-
-.api-key-link {
-  display: block;
-  margin-top: 0.5rem;
-  font-size: 0.7rem;
-  text-align: center;
-  color: hsl(var(--primary) / 0.9);
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-.api-key-link:hover {
-  color: hsl(var(--primary));
-  text-shadow: 0 0 10px hsl(var(--primary) / 0.5);
-}
 
 /* Responsive Grid */
 .zodiac-grid {

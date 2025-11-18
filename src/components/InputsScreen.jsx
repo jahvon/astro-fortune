@@ -106,7 +106,6 @@ export default function InputsScreen({ active, appState, setAppState, onConsult 
                 <Button
                   key={id}
                   variant={appState.topic === id ? 'cosmic' : 'outline'}
-                  className={appState.topic === id ? '' : 'border-purple-500/50 hover:border-purple-500'}
                   onClick={() => handleTopicSelect(id)}
                 >
                   {label}
@@ -127,7 +126,6 @@ export default function InputsScreen({ active, appState, setAppState, onConsult 
                 <Button
                   key={id}
                   variant={appState.feeling === id ? 'cosmic' : 'outline'}
-                  className={appState.feeling === id ? '' : 'border-purple-500/50 hover:border-purple-500'}
                   onClick={() => handleFeelingSelect(id)}
                 >
                   {label}
