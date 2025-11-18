@@ -400,6 +400,20 @@
             background: rgba(147, 51, 234, 0.8);
         }
 
+        .api-key-link {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.7rem;
+            text-align: center;
+            color: rgba(147, 51, 234, 0.9);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .api-key-link:hover {
+            color: rgba(236, 72, 153, 1);
+        }
+
         /* Responsive Grid */
         .zodiac-grid {
             display: grid;
@@ -432,6 +446,7 @@
         >
         <button id="confirmApiKey" class="api-key-btn">Confirm Key</button>
         <div id="apiKeyStatus" class="api-key-status"></div>
+        <a href="https://aistudio.google.com/apikey" target="_blank" class="api-key-link">Get API key from Google AI Studio →</a>
     </div>
 
     <!-- Screen 1: Welcome -->
@@ -764,7 +779,7 @@ Then, weave all this information together (my sign, my feeling, my topic, and th
             };
 
             const response = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
                 {
                     method: 'POST',
                     headers: {
@@ -815,7 +830,7 @@ Then, weave all this information together (my sign, my feeling, my topic, and th
             };
 
             const response = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
                 {
                     method: 'POST',
                     headers: {
@@ -984,7 +999,7 @@ Then, weave all this information together (my sign, my feeling, my topic, and th
             try {
                 // Test the API key with a simple request
                 const response = await fetch(
-                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
+                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
                     {
                         method: 'POST',
                         headers: {
