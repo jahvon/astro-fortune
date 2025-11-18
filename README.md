@@ -147,59 +147,44 @@ astro-fortune/
 
 ## 📦 Deployment to GitHub Pages
 
-### Quick Deploy
+### Automated Deployment (Recommended)
 
-1. Build the project:
+This repo includes a GitHub Actions workflow that **automatically deploys to GitHub Pages** when you push to **any branch**.
+
+**Setup Steps:**
+
+1. **Enable GitHub Pages in your repository:**
+   - Go to Settings → Pages
+   - Under "Build and deployment":
+     - Source: **GitHub Actions**
+
+2. **Push to any branch:**
    ```bash
-   npm run build
+   git push origin <your-branch>
    ```
 
-2. The built files will be in the `dist/` directory
+3. **Monitor deployment:**
+   - Go to the "Actions" tab in your repository
+   - Watch the "Deploy to GitHub Pages" workflow run
+   - Once complete, your app will be live!
 
-3. Deploy using GitHub Pages (requires gh-pages package):
-   ```bash
-   npm install -D gh-pages
-   npx gh-pages -d dist
-   ```
+Your app will be available at: `https://<username>.github.io/astro-fortune/`
 
-### Automated Deployment with GitHub Actions
+**Manual Trigger:**
+You can also manually trigger deployment from the Actions tab → "Deploy to GitHub Pages" → "Run workflow"
 
-Create `.github/workflows/deploy.yml`:
+### Manual Deployment (Alternative)
 
-```yaml
-name: Deploy to GitHub Pages
+If you prefer manual deployment:
 
-on:
-  push:
-    branches: [ main ]
+```bash
+# Build the project
+npm run build
 
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+# Deploy using gh-pages
+npm install -D gh-pages
+npx gh-pages -d dist
 ```
-
-Then enable GitHub Pages in your repository settings (Settings → Pages → Source: `gh-pages` branch).
-
-Your app will be live at: `https://<username>.github.io/astro-fortune/`
 
 ## 🎨 Customization
 
