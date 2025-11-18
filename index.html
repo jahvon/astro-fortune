@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Fortune Teller</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:wght@300;400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Three.js -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0014;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Cinzel', serif;
+        }
+
+        .heading-font {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        /* 3D Background Canvas */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* Screen container */
+        .screen {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            pointer-events: none;
+        }
+
+        .screen.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Crystal Ball Animation */
+        .crystal-ball {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(147, 51, 234, 0.3), rgba(79, 70, 229, 0.2), transparent);
+            box-shadow:
+                0 0 60px rgba(147, 51, 234, 0.6),
+                0 0 100px rgba(79, 70, 229, 0.4),
+                inset 0 0 60px rgba(147, 51, 234, 0.3);
+            overflow: hidden;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .crystal-ball::before,
+        .crystal-ball::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        .crystal-ball::before {
+            background: conic-gradient(
+                from 0deg,
+                transparent,
+                rgba(147, 51, 234, 0.5),
+                transparent,
+                rgba(79, 70, 229, 0.5),
+                transparent
+            );
+            animation: rotate-cw 8s linear infinite;
+        }
+
+        .crystal-ball::after {
+            background: radial-gradient(
+                circle at 50% 50%,
+                rgba(236, 72, 153, 0.3),
+                transparent 60%
+            );
+            animation: rotate-ccw 6s linear infinite, pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes rotate-cw {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes rotate-ccw {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* Zodiac Sign Icons */
+        .zodiac-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid rgba(147, 51, 234, 0.5);
+            background: rgba(17, 24, 39, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .zodiac-icon:hover {
+            transform: scale(1.1);
+            border-color: rgba(147, 51, 234, 1);
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.6);
+        }
+
+        .zodiac-icon.selected {
+            border-color: rgba(236, 72, 153, 1);
+            background: rgba(147, 51, 234, 0.3);
+            box-shadow: 0 0 30px rgba(236, 72, 153, 0.8);
+        }
+
+        /* Buttons */
+        .cosmic-button {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-family: 'Cinzel', serif;
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.8), rgba(79, 70, 229, 0.8));
+            border: 2px solid rgba(147, 51, 234, 0.5);
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .cosmic-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(147, 51, 234, 0.8);
+            border-color: rgba(236, 72, 153, 1);
+        }
+
+        .cosmic-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        .option-button {
+            padding: 0.8rem 2rem;
+            font-family: 'Inter', sans-serif;
+            background: rgba(17, 24, 39, 0.8);
+            border: 2px solid rgba(147, 51, 234, 0.5);
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-button:hover {
+            background: rgba(147, 51, 234, 0.3);
+            border-color: rgba(147, 51, 234, 1);
+            transform: scale(1.05);
+        }
+
+        .option-button.selected {
+            background: rgba(147, 51, 234, 0.5);
+            border-color: rgba(236, 72, 153, 1);
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.6);
+        }
+
+        /* Loading Messages */
+        .loading-message {
+            font-size: 1.5rem;
+            font-family: 'Cormorant Garamond', serif;
+            color: rgba(236, 72, 153, 1);
+            text-shadow: 0 0 10px rgba(236, 72, 153, 0.6);
+            animation: fadeInOut 2s ease-in-out infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        /* Fortune Display */
+        .fortune-card {
+            background: rgba(17, 24, 39, 0.9);
+            border: 2px solid rgba(147, 51, 234, 0.5);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 1rem;
+            box-shadow: 0 0 40px rgba(147, 51, 234, 0.3);
+        }
+
+        .fortune-card h3 {
+            color: rgba(236, 72, 153, 1);
+            text-shadow: 0 0 10px rgba(236, 72, 153, 0.6);
+            margin-bottom: 1rem;
+        }
+
+        /* API Key Input */
+        .api-key-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 100;
+            background: rgba(17, 24, 39, 0.95);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(147, 51, 234, 0.5);
+        }
+
+        .api-key-input {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(147, 51, 234, 0.5);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 5px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Grid */
+        .zodiac-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 1rem;
+            max-width: 600px;
+            margin: 2rem 0;
+        }
+
+        /* Smooth transitions */
+        .fade-transition {
+            transition: opacity 0.8s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- 3D Starfield Background -->
+    <canvas id="starfield"></canvas>
+
+    <!-- API Key Container -->
+    <div class="api-key-container">
+        <label for="apiKey" style="font-size: 0.8rem; display: block; margin-bottom: 0.5rem;">Gemini API Key:</label>
+        <input
+            type="password"
+            id="apiKey"
+            class="api-key-input"
+            placeholder="Enter your API key"
+            style="width: 250px;"
+        >
+    </div>
+
+    <!-- Screen 1: Welcome -->
+    <div id="screen-welcome" class="screen active">
+        <div class="crystal-ball"></div>
+        <h1 class="text-6xl mt-12 mb-6 text-center heading-font" style="text-shadow: 0 0 20px rgba(147, 51, 234, 0.8);">
+            The Cosmos is Waiting
+        </h1>
+        <p class="text-2xl mb-12 text-center heading-font" style="color: rgba(236, 72, 153, 1);">
+            What guidance do you seek?
+        </p>
+        <button id="btn-begin" class="cosmic-button">Begin Your Reading</button>
+    </div>
+
+    <!-- Screen 2: Inputs (The Ritual) -->
+    <div id="screen-inputs" class="screen">
+        <div style="max-width: 800px; width: 100%;">
+            <!-- Question 1: Star Sign -->
+            <div id="question-1" class="question-container mb-12">
+                <h2 class="text-4xl mb-8 text-center heading-font" style="color: rgba(236, 72, 153, 1);">
+                    What is your Star Sign?
+                </h2>
+                <div class="zodiac-grid">
+                    <div class="zodiac-icon" data-sign="aries" title="Aries">♈</div>
+                    <div class="zodiac-icon" data-sign="taurus" title="Taurus">♉</div>
+                    <div class="zodiac-icon" data-sign="gemini" title="Gemini">♊</div>
+                    <div class="zodiac-icon" data-sign="cancer" title="Cancer">♋</div>
+                    <div class="zodiac-icon" data-sign="leo" title="Leo">♌</div>
+                    <div class="zodiac-icon" data-sign="virgo" title="Virgo">♍</div>
+                    <div class="zodiac-icon" data-sign="libra" title="Libra">♎</div>
+                    <div class="zodiac-icon" data-sign="scorpio" title="Scorpio">♏</div>
+                    <div class="zodiac-icon" data-sign="sagittarius" title="Sagittarius">♐</div>
+                    <div class="zodiac-icon" data-sign="capricorn" title="Capricorn">♑</div>
+                    <div class="zodiac-icon" data-sign="aquarius" title="Aquarius">♒</div>
+                    <div class="zodiac-icon" data-sign="pisces" title="Pisces">♓</div>
+                </div>
+            </div>
+
+            <!-- Question 2: Topic -->
+            <div id="question-2" class="question-container mb-12" style="opacity: 0; transition: opacity 0.5s;">
+                <h2 class="text-4xl mb-8 text-center heading-font" style="color: rgba(236, 72, 153, 1);">
+                    What path do you wish to illuminate?
+                </h2>
+                <div class="flex flex-wrap gap-4 justify-center">
+                    <button class="option-button" data-topic="career">Career</button>
+                    <button class="option-button" data-topic="relationships">Relationships</button>
+                    <button class="option-button" data-topic="personal fortune">Personal Fortune</button>
+                    <button class="option-button" data-topic="general vibe">A General Vibe Check</button>
+                </div>
+            </div>
+
+            <!-- Question 3: Feeling -->
+            <div id="question-3" class="question-container mb-12" style="opacity: 0; transition: opacity 0.5s;">
+                <h2 class="text-4xl mb-8 text-center heading-font" style="color: rgba(236, 72, 153, 1);">
+                    How is your spirit today?
+                </h2>
+                <div class="flex flex-wrap gap-4 justify-center">
+                    <button class="option-button" data-feeling="hopeful">Hopeful</button>
+                    <button class="option-button" data-feeling="curious">Curious</button>
+                    <button class="option-button" data-feeling="worried">Worried</button>
+                    <button class="option-button" data-feeling="content">Content</button>
+                    <button class="option-button" data-feeling="tired">Tired</button>
+                </div>
+            </div>
+
+            <!-- Final Button -->
+            <div id="consult-button-container" class="text-center mt-12" style="opacity: 0; transition: opacity 0.5s;">
+                <button id="btn-consult" class="cosmic-button">Consult the Cosmos</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen 3: Loading -->
+    <div id="screen-loading" class="screen">
+        <div class="crystal-ball" style="width: 300px; height: 300px;"></div>
+        <div id="loading-messages" class="mt-12">
+            <p class="loading-message">Reading the stars...</p>
+        </div>
+    </div>
+
+    <!-- Screen 4: Reveal -->
+    <div id="screen-reveal" class="screen">
+        <div style="max-width: 900px; width: 100%;">
+            <h1 class="text-5xl mb-8 text-center heading-font" style="text-shadow: 0 0 20px rgba(147, 51, 234, 0.8);">
+                Your Fortune Awaits
+            </h1>
+
+            <!-- Audio Player -->
+            <div id="audio-container" class="text-center mb-8">
+                <audio id="fortune-audio" controls autoplay style="width: 100%; max-width: 500px;"></audio>
+            </div>
+
+            <!-- Fortune Cards -->
+            <div class="fortune-card mb-6">
+                <h3 class="text-3xl mb-4">Today's Fortune</h3>
+                <p id="fortune-text" class="text-lg leading-relaxed" style="color: rgba(229, 231, 235, 1);"></p>
+            </div>
+
+            <div class="fortune-card mb-6">
+                <h3 class="text-2xl mb-4">Cosmic Influence</h3>
+                <p id="cosmic-influence-text" class="text-lg leading-relaxed" style="color: rgba(229, 231, 235, 1);"></p>
+            </div>
+
+            <div class="fortune-card mb-8">
+                <h3 class="text-2xl mb-4">Zodiac Tip</h3>
+                <p id="zodiac-tip-text" class="text-lg leading-relaxed" style="color: rgba(229, 231, 235, 1);"></p>
+            </div>
+
+            <div class="text-center">
+                <button id="btn-restart" class="cosmic-button">Seek Another Reading</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===========================
+        // Three.js Starfield Background
+        // ===========================
+        let scene, camera, renderer, stars;
+        let mouseX = 0, mouseY = 0;
+
+        function initStarfield() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 5;
+
+            renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('starfield'), alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            // Create particles
+            const starGeometry = new THREE.BufferGeometry();
+            const starCount = 3000;
+            const positions = new Float32Array(starCount * 3);
+            const colors = new Float32Array(starCount * 3);
+
+            for (let i = 0; i < starCount * 3; i += 3) {
+                positions[i] = (Math.random() - 0.5) * 100;
+                positions[i + 1] = (Math.random() - 0.5) * 100;
+                positions[i + 2] = (Math.random() - 0.5) * 100;
+
+                // Purple/blue color palette
+                colors[i] = 0.5 + Math.random() * 0.5;     // R
+                colors[i + 1] = 0.3 + Math.random() * 0.4; // G
+                colors[i + 2] = 0.8 + Math.random() * 0.2; // B
+            }
+
+            starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            starGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const starMaterial = new THREE.PointsMaterial({
+                size: 0.1,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8
+            });
+
+            stars = new THREE.Points(starGeometry, starMaterial);
+            scene.add(stars);
+
+            // Mouse move listener
+            document.addEventListener('mousemove', (event) => {
+                mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+                mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+            });
+
+            // Resize listener
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            animate();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Rotate stars slowly
+            stars.rotation.y += 0.0002;
+            stars.rotation.x += 0.0001;
+
+            // Parallax effect
+            camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
+            camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.05;
+            camera.lookAt(scene.position);
+
+            renderer.render(scene, camera);
+        }
+
+        // ===========================
+        // App State & UI Management
+        // ===========================
+        const appState = {
+            zodiacSign: null,
+            topic: null,
+            feeling: null
+        };
+
+        function switchScreen(hideScreen, showScreen) {
+            const hide = document.getElementById(hideScreen);
+            const show = document.getElementById(showScreen);
+
+            hide.classList.remove('active');
+            setTimeout(() => {
+                show.classList.add('active');
+            }, 100);
+        }
+
+        // ===========================
+        // Screen 1: Welcome
+        // ===========================
+        document.getElementById('btn-begin').addEventListener('click', () => {
+            switchScreen('screen-welcome', 'screen-inputs');
+        });
+
+        // ===========================
+        // Screen 2: Inputs
+        // ===========================
+
+        // Zodiac Selection
+        const zodiacIcons = document.querySelectorAll('.zodiac-icon');
+        zodiacIcons.forEach(icon => {
+            icon.addEventListener('click', () => {
+                zodiacIcons.forEach(i => i.classList.remove('selected'));
+                icon.classList.add('selected');
+                appState.zodiacSign = icon.dataset.sign;
+
+                // Show next question
+                setTimeout(() => {
+                    document.getElementById('question-2').style.opacity = '1';
+                }, 300);
+            });
+        });
+
+        // Topic Selection
+        const topicButtons = document.querySelectorAll('[data-topic]');
+        topicButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                topicButtons.forEach(b => b.classList.remove('selected'));
+                button.classList.add('selected');
+                appState.topic = button.dataset.topic;
+
+                // Show next question
+                setTimeout(() => {
+                    document.getElementById('question-3').style.opacity = '1';
+                }, 300);
+            });
+        });
+
+        // Feeling Selection
+        const feelingButtons = document.querySelectorAll('[data-feeling]');
+        feelingButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                feelingButtons.forEach(b => b.classList.remove('selected'));
+                button.classList.add('selected');
+                appState.feeling = button.dataset.feeling;
+
+                // Show consult button
+                setTimeout(() => {
+                    document.getElementById('consult-button-container').style.opacity = '1';
+                }, 300);
+            });
+        });
+
+        // ===========================
+        // Gemini API Functions
+        // ===========================
+
+        async function getFortune() {
+            const apiKey = document.getElementById('apiKey').value;
+            if (!apiKey) {
+                throw new Error('Please enter your Gemini API key');
+            }
+
+            const prompt = `I am a ${appState.zodiacSign} and I am feeling ${appState.feeling}. I seek guidance on my ${appState.topic}.
+
+First, use your search tool to find the current, real-time planetary alignments and astrological events (like "Mars in Leo" or "Mercury retrograde") and how they generally affect a ${appState.zodiacSign}.
+
+Then, weave all this information together (my sign, my feeling, my topic, and the current planets) to generate a response in this exact JSON format:
+
+{
+  "vocalSummary": "A 1-2 sentence concise summary of the fortune.",
+  "fullFortune": "A 2-3 paragraph detailed reading.",
+  "cosmicInfluence": "A 1-paragraph explanation of which planetary transit is influencing this fortune.",
+  "astrologyTip": "A single, actionable sentence of advice."
+}`;
+
+            const requestBody = {
+                contents: [{
+                    parts: [{
+                        text: prompt
+                    }]
+                }],
+                tools: [{
+                    google_search: {}
+                }],
+                systemInstruction: {
+                    parts: [{
+                        text: "You are a mystical, wise, and comforting modern astrologer. You provide insightful, poetic, and helpful guidance based on the stars. Your tone is enigmatic but kind. Your response MUST be a valid JSON object with no additional text before or after the JSON."
+                    }]
+                },
+                generationConfig: {
+                    temperature: 0.9,
+                    topP: 0.95,
+                    topK: 40,
+                    maxOutputTokens: 2048,
+                }
+            };
+
+            const response = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                }
+            );
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`API Error: ${errorData.error?.message || 'Unknown error'}`);
+            }
+
+            const data = await response.json();
+            const responseText = data.candidates[0].content.parts[0].text;
+
+            // Extract JSON from response (might have markdown code blocks)
+            let jsonText = responseText.trim();
+            if (jsonText.startsWith('```json')) {
+                jsonText = jsonText.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+            } else if (jsonText.startsWith('```')) {
+                jsonText = jsonText.replace(/```\n?/g, '');
+            }
+
+            return JSON.parse(jsonText);
+        }
+
+        async function getSpeech(textToSpeak) {
+            const apiKey = document.getElementById('apiKey').value;
+
+            const requestBody = {
+                contents: [{
+                    parts: [{
+                        text: `Say in a clear, soothing, and slightly mysterious female voice: "${textToSpeak}"`
+                    }]
+                }],
+                generationConfig: {
+                    speechConfig: {
+                        voiceConfig: {
+                            prebuiltVoiceConfig: {
+                                voiceName: "Callirrhoe"
+                            }
+                        }
+                    }
+                }
+            };
+
+            const response = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error('TTS API Error');
+            }
+
+            const data = await response.json();
+
+            // Extract audio data
+            if (data.candidates && data.candidates[0].content.parts[0].inlineData) {
+                const audioData = data.candidates[0].content.parts[0].inlineData.data;
+                return base64ToWavBlob(audioData);
+            }
+
+            throw new Error('No audio data in response');
+        }
+
+        function base64ToWavBlob(base64) {
+            const binaryString = atob(base64);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return new Blob([bytes], { type: 'audio/wav' });
+        }
+
+        // ===========================
+        // Loading Messages Cycle
+        // ===========================
+        const loadingMessages = [
+            "Reading the stars...",
+            "Consulting the planets...",
+            "Focusing energy...",
+            "Aligning the cosmos...",
+            "Channeling wisdom..."
+        ];
+
+        let loadingInterval;
+
+        function startLoadingMessages() {
+            let index = 0;
+            const messageElement = document.querySelector('.loading-message');
+
+            loadingInterval = setInterval(() => {
+                index = (index + 1) % loadingMessages.length;
+                messageElement.textContent = loadingMessages[index];
+            }, 2000);
+        }
+
+        function stopLoadingMessages() {
+            if (loadingInterval) {
+                clearInterval(loadingInterval);
+            }
+        }
+
+        // ===========================
+        // Main Orchestration
+        // ===========================
+        document.getElementById('btn-consult').addEventListener('click', async () => {
+            if (!appState.zodiacSign || !appState.topic || !appState.feeling) {
+                alert('Please answer all questions before consulting the cosmos.');
+                return;
+            }
+
+            // Switch to loading screen
+            switchScreen('screen-inputs', 'screen-loading');
+            startLoadingMessages();
+
+            try {
+                // Get fortune data
+                const fortuneData = await getFortune();
+
+                // Get speech
+                let audioBlob = null;
+                try {
+                    audioBlob = await getSpeech(fortuneData.vocalSummary);
+                } catch (error) {
+                    console.error('TTS failed:', error);
+                    // Continue without audio
+                }
+
+                stopLoadingMessages();
+
+                // Populate reveal screen
+                document.getElementById('fortune-text').textContent = fortuneData.fullFortune;
+                document.getElementById('cosmic-influence-text').textContent = fortuneData.cosmicInfluence;
+                document.getElementById('zodiac-tip-text').textContent = fortuneData.astrologyTip;
+
+                // Set up audio if available
+                if (audioBlob) {
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audioElement = document.getElementById('fortune-audio');
+                    audioElement.src = audioUrl;
+                } else {
+                    document.getElementById('audio-container').style.display = 'none';
+                }
+
+                // Switch to reveal screen
+                switchScreen('screen-loading', 'screen-reveal');
+
+            } catch (error) {
+                stopLoadingMessages();
+                alert(`Error: ${error.message}`);
+                switchScreen('screen-loading', 'screen-inputs');
+            }
+        });
+
+        // ===========================
+        // Restart
+        // ===========================
+        document.getElementById('btn-restart').addEventListener('click', () => {
+            // Reset state
+            appState.zodiacSign = null;
+            appState.topic = null;
+            appState.feeling = null;
+
+            // Reset UI
+            document.querySelectorAll('.zodiac-icon').forEach(icon => icon.classList.remove('selected'));
+            document.querySelectorAll('.option-button').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById('question-2').style.opacity = '0';
+            document.getElementById('question-3').style.opacity = '0';
+            document.getElementById('consult-button-container').style.opacity = '0';
+            document.getElementById('audio-container').style.display = 'block';
+
+            switchScreen('screen-reveal', 'screen-welcome');
+        });
+
+        // ===========================
+        // Initialize
+        // ===========================
+        initStarfield();
+    </script>
+</body>
+</html>
