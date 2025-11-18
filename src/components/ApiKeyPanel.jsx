@@ -58,51 +58,53 @@ export default function ApiKeyPanel() {
   }
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <button className="api-key-toggle">
-          🔑
-        </button>
-      </SheetTrigger>
-      <SheetContent className="bg-gray-900/95 border-purple-500/50">
-        <SheetHeader>
-          <SheetTitle className="text-purple-400">Gemini API Key</SheetTitle>
-          <SheetDescription className="text-gray-400">
-            Enter your Gemini API key to unlock cosmic wisdom
-          </SheetDescription>
-        </SheetHeader>
-        <div className="mt-6 space-y-4">
-          <div>
-            <label htmlFor="apiKey" className="text-sm text-gray-300 block mb-2">
-              API Key
-            </label>
-            <Input
-              type="password"
-              id="apiKey"
-              placeholder="Enter your API key"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              className="bg-black/50 border-purple-500/50 text-white"
-            />
-          </div>
-          <Button onClick={confirmKey} variant="cosmic" className="w-full">
-            Confirm Key
-          </Button>
-          {status.text && (
-            <div className={`text-sm text-center ${status.type === 'success' ? 'text-green-400' : 'text-red-400'}`}>
-              {status.text}
+    <div className="fixed top-4 right-4 z-50">
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetTrigger asChild>
+          <button className="api-key-toggle">
+            🔑
+          </button>
+        </SheetTrigger>
+        <SheetContent className="bg-card/95 backdrop-blur-lg border-primary/50">
+          <SheetHeader>
+            <SheetTitle className="text-primary font-['Cinzel']">Gemini API Key</SheetTitle>
+            <SheetDescription className="text-muted-foreground">
+              Enter your Gemini API key to unlock cosmic wisdom
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-4">
+            <div>
+              <label htmlFor="apiKey" className="text-sm text-foreground block mb-2">
+                API Key
+              </label>
+              <Input
+                type="password"
+                id="apiKey"
+                placeholder="Enter your API key"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                className="bg-background/50 border-primary/50 text-foreground focus:border-primary focus:ring-primary"
+              />
             </div>
-          )}
-          <a
-            href="https://aistudio.google.com/apikey"
-            target="_blank"
-            rel="noreferrer"
-            className="text-xs text-purple-400 hover:text-pink-400 block text-center transition-colors"
-          >
-            Get API key from Google AI Studio →
-          </a>
-        </div>
-      </SheetContent>
-    </Sheet>
+            <Button onClick={confirmKey} variant="cosmic" className="w-full">
+              Confirm Key
+            </Button>
+            {status.text && (
+              <div className={`text-sm text-center ${status.type === 'success' ? 'text-secondary' : 'text-destructive'}`}>
+                {status.text}
+              </div>
+            )}
+            <a
+              href="https://aistudio.google.com/apikey"
+              target="_blank"
+              rel="noreferrer"
+              className="text-xs text-primary hover:text-primary/80 block text-center transition-colors hover:shadow-[0_0_10px_hsl(var(--primary)/0.5)]"
+            >
+              Get API key from Google AI Studio →
+            </a>
+          </div>
+        </SheetContent>
+      </Sheet>
+    </div>
   )
 }
