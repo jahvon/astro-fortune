@@ -105,8 +105,8 @@ export default function InputsScreen({ active, appState, setAppState, onConsult 
               {topics.map(({ id, label }) => (
                 <Button
                   key={id}
-                  variant={appState.topic === id ? 'cosmic' : 'outline'}
-                  className={appState.topic === id ? '' : 'border-purple-500/50 hover:border-purple-500'}
+                  variant="option"
+                  className={appState.topic === id ? 'selected' : ''}
                   onClick={() => handleTopicSelect(id)}
                 >
                   {label}
@@ -126,8 +126,8 @@ export default function InputsScreen({ active, appState, setAppState, onConsult 
               {feelings.map(({ id, label }) => (
                 <Button
                   key={id}
-                  variant={appState.feeling === id ? 'cosmic' : 'outline'}
-                  className={appState.feeling === id ? '' : 'border-purple-500/50 hover:border-purple-500'}
+                  variant="option"
+                  className={appState.feeling === id ? 'selected' : ''}
                   onClick={() => handleFeelingSelect(id)}
                 >
                   {label}

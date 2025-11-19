@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Starfield from './components/Starfield'
 import ApiKeyPanel from './components/ApiKeyPanel'
 import WelcomeScreen from './components/WelcomeScreen'
@@ -14,7 +14,6 @@ function App() {
     feeling: null
   })
   const [fortuneData, setFortuneData] = useState(null)
-  const [audioBlob, setAudioBlob] = useState(null)
 
   const switchScreen = (screen) => {
     setCurrentScreen(screen)
@@ -29,16 +28,10 @@ function App() {
 
     try {
       const fortune = await getFortune(apiKey, appState)
-      let audio = null
 
-      try {
-        audio = await getSpeech(apiKey, fortune.vocalSummary)
-      } catch (error) {
-        console.error('TTS failed:', error)
-      }
-
+      // Use browser's built-in TTS instead of Google Cloud TTS
       setFortuneData(fortune)
-      setAudioBlob(audio)
+      setAudioBlob(null) // We'll use Web Speech API instead
       switchScreen('reveal')
     } catch (error) {
       alert(`Error: ${error.message}`)
@@ -53,7 +46,6 @@ function App() {
       feeling: null
     })
     setFortuneData(null)
-    setAudioBlob(null)
     switchScreen('welcome')
   }
 
@@ -79,7 +71,6 @@ function App() {
       <RevealScreen
         active={currentScreen === 'reveal'}
         fortuneData={fortuneData}
-        audioBlob={audioBlob}
         onRestart={handleRestart}
       />
     </>
@@ -90,16 +81,22 @@ function App() {
 async function getFortune(apiKey, appState) {
   const prompt = `I am a ${appState.zodiacSign} and I am feeling ${appState.feeling}. I seek guidance on my ${appState.topic}.
 
-First, use your search tool to find the current, real-time planetary alignments and astrological events (like "Mars in Leo" or "Mercury retrograde") and how they generally affect a ${appState.zodiacSign}.
+Generate a mystical, insightful astrological reading that weaves together my sign, feeling, and topic.
 
-Then, weave all this information together (my sign, my feeling, my topic, and the current planets) to generate a response in this exact JSON format:
+CRITICAL: Your response must be ONLY a valid JSON object with these exact fields. Do not include any text before or after the JSON:
 
 {
-  "vocalSummary": "A 1-2 sentence concise summary of the fortune.",
-  "fullFortune": "A 2-3 paragraph detailed reading.",
-  "cosmicInfluence": "A 1-paragraph explanation of which planetary transit is influencing this fortune.",
-  "astrologyTip": "A single, actionable sentence of advice."
-}`
+  "vocalSummary": "A 1-2 sentence concise summary",
+  "fullFortune": "A detailed 2-3 paragraph reading",
+  "cosmicInfluence": "A 1-paragraph explanation of planetary influences",
+  "astrologyTip": "A single actionable sentence of advice"
+}
+
+IMPORTANT: Keep each field under these limits to ensure valid JSON:
+- vocalSummary: 1-2 sentences maximum
+- fullFortune: 2-3 paragraphs maximum (about 300 words)
+- cosmicInfluence: 1 paragraph maximum (about 100 words)
+- astrologyTip: 1 sentence maximum`
 
   const requestBody = {
     contents: [{
@@ -107,12 +104,9 @@ Then, weave all this information together (my sign, my feeling, my topic, and th
         text: prompt
       }]
     }],
-    tools: [{
-      google_search: {}
-    }],
     systemInstruction: {
       parts: [{
-        text: "You are a mystical, wise, and comforting modern astrologer. You provide insightful, poetic, and helpful guidance based on the stars. Your tone is enigmatic but kind. Your response MUST be a valid JSON object with no additional text before or after the JSON."
+        text: "You are a mystical, wise, and comforting modern astrologer. You provide insightful, poetic, and helpful guidance based on the stars. Your tone is enigmatic but kind. CRITICAL: You must ONLY output valid JSON with properly escaped quotes. Never include markdown code blocks or any text outside the JSON object."
       }]
     },
     generationConfig: {
@@ -120,6 +114,29 @@ Then, weave all this information together (my sign, my feeling, my topic, and th
       topP: 0.95,
       topK: 40,
       maxOutputTokens: 2048,
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: "object",
+        properties: {
+          vocalSummary: {
+            type: "string",
+            description: "A 1-2 sentence concise summary of the fortune"
+          },
+          fullFortune: {
+            type: "string",
+            description: "A 2-3 paragraph detailed reading"
+          },
+          cosmicInfluence: {
+            type: "string",
+            description: "A 1-paragraph explanation of which planetary transit is influencing this fortune"
+          },
+          astrologyTip: {
+            type: "string",
+            description: "A single, actionable sentence of advice"
+          }
+        },
+        required: ["vocalSummary", "fullFortune", "cosmicInfluence", "astrologyTip"]
+      }
     }
   }
 
@@ -149,70 +166,14 @@ Then, weave all this information together (my sign, my feeling, my topic, and th
     jsonText = jsonText.replace(/```\n?/g, '')
   }
 
-  return JSON.parse(jsonText)
+  try {
+    return JSON.parse(jsonText)
+  } catch (parseError) {
+    console.error('JSON Parse Error:', parseError)
+    console.error('Attempted to parse:', jsonText)
+    throw new Error(`Failed to parse AI response: ${parseError.message}. The AI may have generated invalid JSON.`)
+  }
 }
 
-async function getSpeech(apiKey, textToSpeak) {
-  const requestBody = {
-    contents: [{
-      parts: [{
-        text: textToSpeak
-      }]
-    }],
-    generationConfig: {
-      responseModalities: ["AUDIO"],
-      speechConfig: {
-        voiceConfig: {
-          prebuiltVoiceConfig: {
-            voiceName: "Puck"
-          }
-        }
-      }
-    }
-  }
-
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-tts:generateContent?key=${apiKey}`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestBody)
-    }
-  )
-
-  if (!response.ok) {
-    const errorData = await response.json()
-    throw new Error(`TTS API Error: ${errorData.error?.message || 'Unknown error'}`)
-  }
-
-  const data = await response.json()
-  console.log('TTS Response:', data)
-
-  if (data.candidates && data.candidates[0]) {
-    const candidate = data.candidates[0]
-
-    if (candidate.content && candidate.content.parts) {
-      for (const part of candidate.content.parts) {
-        if (part.inlineData && part.inlineData.data) {
-          const mimeType = part.inlineData.mimeType || 'audio/wav'
-          return base64ToAudioBlob(part.inlineData.data, mimeType)
-        }
-      }
-    }
-  }
-
-  throw new Error('No audio data in response')
-}
-
-function base64ToAudioBlob(base64, mimeType = 'audio/wav') {
-  const binaryString = atob(base64)
-  const bytes = new Uint8Array(binaryString.length)
-  for (let i = 0; i < binaryString.length; i++) {
-    bytes[i] = binaryString.charCodeAt(i)
-  }
-  return new Blob([bytes], { type: mimeType })
-}
 
 export default App

@@ -1,18 +1,8 @@
 import { useState } from 'react'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 
 export default function ApiKeyPanel() {
   const [apiKey, setApiKey] = useState('')
-  const [open, setOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
   const [status, setStatus] = useState({ text: '', type: '' })
 
   const confirmKey = async () => {
@@ -47,7 +37,7 @@ export default function ApiKeyPanel() {
         sessionStorage.setItem('gemini-api-key', apiKey)
 
         setTimeout(() => {
-          setOpen(false)
+          setIsOpen(false)
         }, 2000)
       } else {
         setStatus({ text: '✗ Invalid API Key', type: 'error' })
@@ -58,51 +48,54 @@ export default function ApiKeyPanel() {
   }
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <button className="api-key-toggle">
-          🔑
-        </button>
-      </SheetTrigger>
-      <SheetContent className="bg-gray-900/95 border-purple-500/50">
-        <SheetHeader>
-          <SheetTitle className="text-purple-400">Gemini API Key</SheetTitle>
-          <SheetDescription className="text-gray-400">
-            Enter your Gemini API key to unlock cosmic wisdom
-          </SheetDescription>
-        </SheetHeader>
-        <div className="mt-6 space-y-4">
-          <div>
-            <label htmlFor="apiKey" className="text-sm text-gray-300 block mb-2">
-              API Key
+    <>
+      {/* Toggle Button */}
+      <button className="api-key-toggle-fixed" onClick={() => setIsOpen(true)}>
+        🔑
+      </button>
+
+      {/* Modal Overlay */}
+      {isOpen && (
+        <>
+          <div className="api-key-overlay" onClick={() => setIsOpen(false)} />
+          <div className="api-key-modal">
+            <button className="api-key-close" onClick={() => setIsOpen(false)}>
+              ✕
+            </button>
+            <h3 style={{ fontSize: '1.2rem', marginBottom: '1rem', color: 'rgba(236, 72, 153, 1)' }}>
+              Gemini API Key
+            </h3>
+            <label htmlFor="apiKey" style={{ fontSize: '0.8rem', display: 'block', marginBottom: '0.5rem' }}>
+              Enter your API key:
             </label>
-            <Input
+            <input
               type="password"
               id="apiKey"
+              className="api-key-input"
               placeholder="Enter your API key"
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
-              className="bg-black/50 border-purple-500/50 text-white"
+              style={{ width: '100%' }}
             />
+            <button onClick={confirmKey} className="api-key-btn">
+              Confirm Key
+            </button>
+            {status.text && (
+              <div className={`api-key-status ${status.type === 'success' ? 'success' : 'error'}`}>
+                {status.text}
+              </div>
+            )}
+            <a
+              href="https://aistudio.google.com/apikey"
+              target="_blank"
+              rel="noreferrer"
+              className="api-key-link"
+            >
+              Get API key from Google AI Studio →
+            </a>
           </div>
-          <Button onClick={confirmKey} variant="cosmic" className="w-full">
-            Confirm Key
-          </Button>
-          {status.text && (
-            <div className={`text-sm text-center ${status.type === 'success' ? 'text-green-400' : 'text-red-400'}`}>
-              {status.text}
-            </div>
-          )}
-          <a
-            href="https://aistudio.google.com/apikey"
-            target="_blank"
-            rel="noreferrer"
-            className="text-xs text-purple-400 hover:text-pink-400 block text-center transition-colors"
-          >
-            Get API key from Google AI Studio →
-          </a>
-        </div>
-      </SheetContent>
-    </Sheet>
+        </>
+      )}
+    </>
   )
 }
